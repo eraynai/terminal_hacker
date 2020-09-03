@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
+
+    //Game Configuration Data
+    string[] level1Passwords = {"books", "aisle", "self", "password", "font", "borrow"};
+    string[] level2Passwords = { "cars", "food", "mitch", "house", "wild" };
+
     //Game State
     int level;
     enum Screen { MainMenu, Password, Win};
@@ -15,8 +17,11 @@ public class Hacker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        print(level1Passwords[0]);
         ShowMainMenu();
     }
+
+ 
 
     void ShowMainMenu()
     {
@@ -48,16 +53,10 @@ public class Hacker : MonoBehaviour
 
     void NewMethod(string input)
     {
-        if (input == "1")
+        bool isValidLevelNumber = (input == "1" || input == "2");
+        if (isValidLevelNumber)
         {
-            level = 1;
-            password = "dog";
-            StartGame();
-        }
-        else if (input == "2")
-        {
-            level = 2;
-            password = "cat";
+            level = int.Parse(input);
             StartGame();
         }
         else
@@ -69,7 +68,21 @@ public class Hacker : MonoBehaviour
     void StartGame()
     {
         currentScreen = Screen.Password;
-        Terminal.WriteLine("You have chosen level " + level);
+        Terminal.ClearScreen();
+        switch (level)
+        {
+            case 1:
+                int index = Random.Range(0, level1Passwords.Length);
+                password = level1Passwords[index];
+                break;
+            case 2:
+                int index2 = Random.Range(0, level2Passwords.Length);
+                password = level2Passwords[index2];
+                break;
+            default:
+                Debug.LogError("Invalid Case");
+                break;
+        }
         Terminal.WriteLine("Please enter your password: ");
     }
 
@@ -77,19 +90,54 @@ public class Hacker : MonoBehaviour
     {
         if(input == password)
         {
-            Terminal.WriteLine("Congratulations, Well Done");
-            Debug.Log("Are you being called");
+            DisplayWinScreen();
+
         }
         else
         {
             Terminal.WriteLine("Wrong Password, try again");
-            Debug.Log("Are you being here");
+            
         }
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void DisplayWinScreen()
     {
+        currentScreen = Screen.Win;
+        Terminal.ClearScreen();
+        ShowLevelReward();
+    }
+
+    void ShowLevelReward()
+    {
+        switch (level)
+        {
+            case 1:
+                Terminal.WriteLine("Have a Book...");
+                Terminal.WriteLine(@"
+
+    _______
+   /      //
+  /      //
+ /______//
+(______(/
+
+");
+                break;
+            case 2:
+                Terminal.WriteLine("Have a Cat....");
+                Terminal.WriteLine(@"
+
+    |\       /|  
+    | \_____/ |
+    (___  ^__^)
+  _ )         (
+(( /           \
+ (    )  ||   ||
+ '----' '--' '--'
+");
+                break;
+        }
         
     }
 }
