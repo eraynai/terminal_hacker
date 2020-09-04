@@ -57,7 +57,7 @@ public class Hacker : MonoBehaviour
         if (isValidLevelNumber)
         {
             level = int.Parse(input);
-            StartGame();
+            AskForPassword();
         }
         else
         {
@@ -65,10 +65,16 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    void StartGame()
+    void AskForPassword()
     {
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
+        SetRandomPassword();
+        Terminal.WriteLine("Please enter your password, hint: " + password.Anagram());
+    }
+
+    void SetRandomPassword()
+    {
         switch (level)
         {
             case 1:
@@ -83,7 +89,6 @@ public class Hacker : MonoBehaviour
                 Debug.LogError("Invalid Case");
                 break;
         }
-        Terminal.WriteLine("Please enter your password: ");
     }
 
     void CheckPassword(string input)
@@ -95,7 +100,7 @@ public class Hacker : MonoBehaviour
         }
         else
         {
-            Terminal.WriteLine("Wrong Password, try again");
+            AskForPassword();
             
         }
     }
@@ -136,6 +141,9 @@ public class Hacker : MonoBehaviour
  (    )  ||   ||
  '----' '--' '--'
 ");
+                break;
+            default:
+                Debug.LogError("Help");
                 break;
         }
         
